@@ -48,3 +48,43 @@ class ProductService:
             db,
             product_id
         )
+
+    def delete_by_id(
+            self,
+            db: Session,
+            product_id: int
+    ):
+        return repository.delete_by_id(
+            db,
+            product_id
+        )
+
+    def delete_by_id(
+    self,
+    db: Session,
+    product_id: int
+    ):
+        return repository.delete_by_id(
+            db,
+            product_id
+        )
+
+    def update(
+    self,
+    db: Session,
+    product_id: int,
+    name: str,
+    quantity: int,
+    price: float,
+    is_active: bool,
+    category_id: int
+    ):
+        return repository.update(
+            db,
+            product_id,
+            name,
+            quantity,
+            price,
+            is_active,
+            category_id
+        )

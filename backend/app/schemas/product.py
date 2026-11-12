@@ -21,3 +21,10 @@ class ProductResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class ProductUpdate(BaseModel):
+    name: str
+    quantity: int
+    price: float
+    is_active: bool
+    category_id: int
