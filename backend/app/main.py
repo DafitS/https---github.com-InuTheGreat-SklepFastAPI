@@ -1,19 +1,15 @@
 from fastapi import FastAPI
 
+from app.api.router import api_router
+
 from app.db.base import Base
 from app.db.database import engine
 
-# Import modeli przed create_all
-from app.models import user
+from app.models.product import Product
+from app.models.category import Category
 
-app = FastAPI(
-    title="My Backend API",
-    version="1.0.0"
-)
+app = FastAPI(title="Products API")
 
 Base.metadata.create_all(bind=engine)
 
-
-@app.get("/")
-def root():
-    return {"message": "API is running"}
+app.include_router(api_router)
