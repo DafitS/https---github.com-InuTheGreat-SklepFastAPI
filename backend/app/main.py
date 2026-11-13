@@ -7,6 +7,8 @@ from app.db.database import engine
 
 from app.models.product import Product
 from app.models.category import Category
+from app.models.address import Address
+from app.models.user import User
 
 app = FastAPI(title="Products API")
 
