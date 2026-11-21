@@ -1,12 +1,22 @@
-
 services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_PASSWORD: tajne_haslo
-      POSTGRES_DB: projekt_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: twoje_haslo
+      POSTGRES_DB: twoja_baza
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d twoja_baza"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: .
     ports:
       - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:twoje_haslo@db:5432/twoja_baza
+    depends_on:
+      db:
+        condition: service_healthy
