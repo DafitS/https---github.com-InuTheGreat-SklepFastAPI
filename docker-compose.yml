@@ -1,0 +1,11 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: tajne_haslo
+      POSTGRES_DB: projekt_db
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
