@@ -8,7 +8,7 @@ from app.schemas.user import (
     UserUpdate,
     UserResponse
 )
-
+from app.core.dependencies import (get_current_user)
 from app.services.user_service import UserService
 
 router = APIRouter(
@@ -18,6 +18,11 @@ router = APIRouter(
 
 service = UserService()
 
+@router.get("/me")
+def me(
+    current_user = Depends(get_current_user)
+):
+    return current_user
 
 @router.post("/", response_model=UserResponse)
 def create_user(
