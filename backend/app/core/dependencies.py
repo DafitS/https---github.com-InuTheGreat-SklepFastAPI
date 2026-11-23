@@ -10,6 +10,8 @@ from app.db.database import get_db
 from app.repositories.user_repository import (
     UserRepository
 )
+from utility.enum import UserRole
+from fastapi import HTTPException, Depends
 
 from utility.jwt import decode_token
 
@@ -44,3 +46,15 @@ def get_current_user(
         )
 
     return user
+
+def require_admin(
+    current_user = Depends(get_current_user)
+):
+
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=403,
+            detail="Access denied"
+        )
+
+    return current_user

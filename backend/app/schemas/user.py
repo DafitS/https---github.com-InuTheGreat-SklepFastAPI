@@ -31,3 +31,6 @@ class UserUpdate(BaseModel):
     phone: str | None = None
     role: UserRole
     is_active: bool
+
+class ChangeRoleRequest(BaseModel):
+    role: UserRole

@@ -4,7 +4,8 @@ from app.models.user import User
 from app.repositories.user_repository import (
     UserRepository
 )
-
+from utility.enum import UserRole
+from fastapi import HTTPException
 from utility.password import hash_password
 
 from app.schemas.user import (
@@ -73,3 +74,30 @@ class UserService:
             user_id,
             user_data
         )
+
+    def change_role(
+            self,
+            db: Session,
+            user_id: int,
+            role: str
+    ):
+        found_user = self.get_by_id(db, user_id)
+
+        if found_user is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Not found"
+            )
+
+        try:
+            found_user.role = UserRole(role)
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid role"
+            )
+
+        db.commit()
+        db.refresh(found_user)
+
+        return found_user

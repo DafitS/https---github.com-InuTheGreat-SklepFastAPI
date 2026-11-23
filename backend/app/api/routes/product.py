@@ -8,6 +8,10 @@ from app.schemas.product import (
     ProductUpdate
 )
 
+from app.core.dependencies import (
+    require_admin
+)
+
 from app.services.product_service import (
     ProductService
 )
@@ -23,7 +27,8 @@ service = ProductService()
 )
 def create_product(
     product: ProductCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
 
     return service.create(
@@ -51,7 +56,8 @@ def get_products(
 )
 def delete_product(
     product_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
     return service.delete_by_id(
         db,
@@ -65,7 +71,8 @@ def delete_product(
 def update_product(
     product_id: int,
     product: ProductUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
     return service.update(
         db,

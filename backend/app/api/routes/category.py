@@ -7,6 +7,11 @@ from app.schemas.category import (
     CategoryResponse,
     CategoryUpdate
 )
+
+from app.core.dependencies import (
+    require_admin
+)
+
 from app.services.category_service import (
     CategoryService
 )
@@ -22,7 +27,8 @@ service = CategoryService()
 )
 def create_category(
     category: CategoryCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
     return service.create(
         db,
@@ -42,7 +48,8 @@ def get_categories(
 @router.delete("/{category_id}")
 def remove_category(
     category_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
     return service.delete_by_id(db, category_id)
 
@@ -53,7 +60,8 @@ def remove_category(
 def update_category(
     category_id: int,
     category: CategoryUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
     return service.update(
         db,

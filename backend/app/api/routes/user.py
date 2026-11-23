@@ -4,12 +4,17 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 
 from app.schemas.user import (
+    ChangeRoleRequest,
     UserCreate,
     UserUpdate,
     UserResponse
 )
 from app.core.dependencies import (get_current_user)
 from app.services.user_service import UserService
+
+from app.core.dependencies import (
+    require_admin
+)
 
 router = APIRouter(
     prefix="/users",
@@ -34,7 +39,8 @@ def create_user(
 
 @router.get("/", response_model=list[UserResponse])
 def get_users(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
     return service.get_all(db)
 
@@ -42,7 +48,8 @@ def get_users(
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(
     user_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
     user = service.get_by_id(
         db,
@@ -65,7 +72,8 @@ def get_user(
 def update_user(
     user_id: int,
     user_data: UserUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
     user = service.update(
         db,
@@ -85,7 +93,8 @@ def update_user(
 @router.delete("/{user_id}")
 def delete_user(
     user_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_admin)
 ):
     result = service.delete_by_id(
         db,
@@ -101,3 +110,15 @@ def delete_user(
     return {
         "message": "User deleted"
     }
+
+@router.patch("/{user_id}/role")
+def change_role(
+    user_id: int,
+    request: ChangeRoleRequest,
+    db: Session = Depends(get_db)
+):
+    return service.change_role(
+        db,
+        user_id,
+        request.role
+    )
